@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>logo-auckland-council-white.png</file>
+        <file>your_details.png</file>
+    </qresource>
+</RCC>
