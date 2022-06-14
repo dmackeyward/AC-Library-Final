@@ -6,7 +6,9 @@
 #include <QSql>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QFont>
+#include <QFile>
+#include <QMessageBox>
+
 
 namespace Ui {
 class userpage;
@@ -34,8 +36,23 @@ private slots:
 
     void on_logoutBtn_clicked();
 
+    void on_editBtn_clicked();
+
+    void on_saveBtn_clicked();
+
+    void on_submitBtn_clicked();
+
+    void on_checkoutBtn_clicked();
+
+    void button_setup();
+
+    void list_setup();
+
 private:
     Ui::userpage *ui;
+
+    QString user_id;
+    QString user_name;
 };
 
 #endif // USERPAGE_H

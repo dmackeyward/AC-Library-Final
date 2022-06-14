@@ -8,8 +8,10 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QMessageBox>
+#include <QFile>
 #include "adminpage.h"
 #include "userpage.h"
+#include <QKeyEvent>
 
 namespace Ui {
 class login;
@@ -31,6 +33,8 @@ private slots:
     void on_submitBtn_clicked();
 
     void on_loginBtn_clicked();
+
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     Ui::login *ui;

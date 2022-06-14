@@ -36,7 +36,7 @@ void login::on_submitBtn_clicked()
 {
     qInfo() << "Opening Database for Registration";
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\build-Library-app-Desktop_Qt_6_3_0_MinGW_64_bit-Debug/library-database.db");
+    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
 
     if(!db.open())
     {
@@ -81,7 +81,7 @@ void login::on_loginBtn_clicked()
 {
     qInfo() << "Opening Database for Login";
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\build-Library-app-Desktop_Qt_6_3_0_MinGW_64_bit-Debug/library-database.db");
+    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
 
     if(!db.open())
     {
@@ -93,7 +93,7 @@ void login::on_loginBtn_clicked()
     QString email = ui->email->text();
     QString password = ui->password->text();
     QSqlQuery query;
-    QString select = "SELECT DISTINCT role FROM users WHERE email = (:email) AND password = (:password)";
+    QString select = "SELECT DISTINCT user_id, name, role FROM users WHERE email = (:email) AND password = (:password)";
 
     //if email = email && password = password && role = admin
     query.prepare(select);
@@ -102,14 +102,29 @@ void login::on_loginBtn_clicked()
     query.exec();
     query.first();
 
-    QString role = query.value(0).toString();
+    std::string user_id = query.value(0).toString().toStdString();
+    QString role = query.value(1).toString();
     qInfo() << role;
-    QString message;
+    QString message;  
 
     if (role != "") {
         db.close();
         message = "Login successful";
         QMessageBox::information(this,"Login", message);
+
+        //write user_id to file
+        QString filename = "user_id.txt";
+        QFile file(filename);
+        if(file.open(QIODevice::WriteOnly))
+        {
+            file.write(user_id.c_str());
+            file.close();
+            qInfo() << "Wrote to the file";
+        }
+        else
+        {
+            qInfo() << file.errorString();
+        }
 
         if (role == "admin") {
             adminpage *w = new adminpage;
@@ -128,6 +143,14 @@ void login::on_loginBtn_clicked()
         QMessageBox::information(this,"Login", message);
         db.close();
     }
+}
+
+void login::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+             {
+                 on_loginBtn_clicked();
+             }
 }
 
 login::~login()
