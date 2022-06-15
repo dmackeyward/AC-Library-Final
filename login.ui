@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login_stacked">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -71,7 +71,7 @@
            </spacer>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="6,5,8">
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="4,5,8">
             <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">

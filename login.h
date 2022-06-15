@@ -11,6 +11,7 @@
 #include <QFile>
 #include "adminpage.h"
 #include "userpage.h"
+#include "database.h"
 #include <QKeyEvent>
 
 namespace Ui {
@@ -26,6 +27,9 @@ public:
     ~login();
 
 private slots:
+
+    void background_setup();
+
     void on_pushButton_clicked();
 
     void on_cancel_clicked();

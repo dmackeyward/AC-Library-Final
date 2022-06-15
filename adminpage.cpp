@@ -7,7 +7,7 @@ adminpage::adminpage(QWidget *parent) :
 {
     ui->setupUi(this);
     QMainWindow::showFullScreen();
-    QPixmap background("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/bookcase-bg.jpg");
+    QPixmap background("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/bookcase-bg.jpg");
     QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
     image.fill(Qt::transparent); //fills with transparent
     QPainter p(&image);

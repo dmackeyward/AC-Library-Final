@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
         userpage.h
         userpage.cpp
         userpage.ui
+        database.h
+        database.cpp
         images.qrc
 )
 

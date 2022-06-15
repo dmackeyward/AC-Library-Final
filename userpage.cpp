@@ -5,136 +5,15 @@ userpage::userpage(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::userpage)
 {
-    //setting the background
     ui->setupUi(this);
-    QMainWindow::showFullScreen();
-    QPixmap background("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/bookcase-bg.jpg");
-    QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
-    image.fill(Qt::transparent); //fills with transparent
-    QPainter p(&image);
-    p.setOpacity(0.5); // set opacity from 0.0 to 1.0, where 0.0 is fully transparent and 1.0 is fully opaque.
-    p.drawPixmap(0, 0, background); // given pixmap into the paint device.
-    p.end();
-    background = background.scaled(this->size(), Qt::IgnoreAspectRatio);
-    QPalette palette;
-    palette.setBrush(QPalette::Window, image);
-    this->setPalette(palette);
-
+    background_setup();
     button_setup();
-
-    //getting user_id
-    QString filename = "user_id.txt";
-    QFile file(filename);
-
-    qInfo() << "Exists:" << file.exists();
-
-    if(file.open(QIODevice::ReadOnly))
-    {
-        userpage::user_id = file.readAll();
-        file.close();
-    }
-    else
-    {
-        qInfo() << file.errorString();
-    }
-
-    //Opening the database:
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
-    db.open();
-
-    if (db.open()) {
-
-        QSqlQuery query_size;
-        query_size.exec("SELECT COUNT (*) FROM books");
-        query_size.first();
-        int count = query_size.value(0).toInt();
-        qDebug() << "Count: " << count;
-
-        int row = 0;
-        QSqlQuery query;
-        query.exec("SELECT * FROM books");
-
-        ui->list1->setRowCount(count);
-        ui->list1->setColumnCount(4);
-        ui->list2->setRowCount(0);
-        ui->list2->setColumnCount(4);
-
-        while(query.next()) {
-
-            QTableWidgetItem *book_id = new QTableWidgetItem();
-            QTableWidgetItem *title = new QTableWidgetItem();
-            QTableWidgetItem *author = new QTableWidgetItem();
-            QTableWidgetItem *description = new QTableWidgetItem();
-
-            book_id->setText(query.value(0).toString());
-            ui->list1->setItem(row, 0, book_id);
-            title->setText(query.value(1).toString());
-            ui->list1->setItem(row, 1, title);
-            author->setText(query.value(2).toString());
-            ui->list1->setItem(row, 2, author);
-            description->setText(query.value(3).toString());
-            ui->list1->setItem(row, 3, description);
-            row++;
-        }
-    }
-
-    ui->details_name->setEnabled(false);
-    ui->details_phone->setEnabled(false);
-    ui->details_address->setEnabled(false);
-    ui->details_email->setEnabled(false);
-    ui->details_password->setEnabled(false);
-
-    QSqlQuery query1;
-    query1.exec("SELECT * FROM users");
-
-    while(query1.next()) {
-        ui->details_name->setText(query1.value(1).toString());
-        ui->userpage_title->setText("Hi " + query1.value(1).toString());
-        ui->details_phone->setText(query1.value(2).toString());
-        ui->details_address->setText(query1.value(3).toString());
-        ui->details_email->setText(query1.value(4).toString());
-        ui->details_password->setText(query1.value(5).toString());
-    }
-
-    QSqlQuery query;
-    QString borrowed_count = "SELECT COUNT (*) FROM borrowed_books WHERE user_id = :user_id;";
-    query.prepare(borrowed_count);
-    query.bindValue(":user_id", user_id);
-    query.exec();
-    query.first();
-    int count = query.value(0).toInt();
-
-    qDebug() << "Count: " << count;
-
-    int row1 = 0;
-    ui->existing_books->setRowCount(count);
-    ui->existing_books->setColumnCount(3);
-
-    QString borrowed_query = "SELECT books.book_id, books.title, books.author from borrowed_books JOIN books where user_id = :user_id AND borrowed_books.book_id = books.book_id;";
-    query.prepare(borrowed_query);
-    query.bindValue(":user_id", user_id);
-    query.exec();
-
-    while (query.next()) {
-        QTableWidgetItem *book_id = new QTableWidgetItem();
-        QTableWidgetItem *title = new QTableWidgetItem();
-        QTableWidgetItem *author = new QTableWidgetItem();
-
-        book_id->setText(query.value(0).toString());
-        ui->existing_books->setItem(row1, 0, book_id);
-        title->setText(query.value(1).toString());
-        ui->existing_books->setItem(row1, 1, title);
-        author->setText(query.value(2).toString());
-        ui->existing_books->setItem(row1, 2, author);
-        row1++;
-    }
-
-    db.close();
-
+    file_function();
+    size_of_lists();
+    populate_booktable();
+    populate_details();
+    populate_existingbooks();
     list_setup();
-
-
 }
 
 userpage::~userpage()
@@ -220,66 +99,42 @@ void userpage::on_saveBtn_clicked()
     QString address = ui->details_address->text();
     QString email = ui->details_email->text();
     QString password = ui->details_password->text();
+    QString update = "UPDATE users SET name = :name, phone = :phone, address = :address, email = :email, password = :password WHERE user_id = :user_id;";
 
-    //Opening the database:
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
-    db.open();
+    QSqlQuery query;
+    query.prepare(update);
+    query.bindValue(":name", name);
+    query.bindValue(":phone", phone);
+    query.bindValue(":address", address);
+    query.bindValue(":email", email);
+    query.bindValue(":password", password);
+    query.bindValue(":user_id", user_id);
+    query.exec();
 
-    if (db.open()) {
+    ui->details_name->setEnabled(false);
+    ui->details_phone->setEnabled(false);
+    ui->details_address->setEnabled(false);
+    ui->details_email->setEnabled(false);
+    ui->details_password->setEnabled(false);
 
-
-        QString update = "UPDATE users SET name = :name, phone = :phone, address = :address, email = :email, password = :password WHERE user_id = :user_id;";
-
-        QSqlQuery query;
-
-        query.prepare(update);
-
-        query.bindValue(":name", name);
-        query.bindValue(":phone", phone);
-        query.bindValue(":address", address);
-        query.bindValue(":email", email);
-        query.bindValue(":password", password);
-        query.bindValue(":user_id", user_id);
-
-
-        query.exec();
-
-        ui->details_name->setEnabled(false);
-        ui->details_phone->setEnabled(false);
-        ui->details_address->setEnabled(false);
-        ui->details_email->setEnabled(false);
-        ui->details_password->setEnabled(false);
-    }
-
-    db.close();
     ui->userpage_title->setText("Hi " + ui->details_name->text());
 }
 
 void userpage::on_submitBtn_clicked()
 {
-    QString name = ui->details_name->text();
-    QString phone = ui->details_phone->text();
-    QString email = ui->details_email->text();
-    QString details = ui->enquiryBox->toPlainText();
-
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
-    db.open();
-
-    if (db.open()) {
-
+    if (!ui->enquiryBox->document()->isEmpty()) {
+        QString name = ui->details_name->text();
+        QString phone = ui->details_phone->text();
+        QString email = ui->details_email->text();
+        QString details = ui->enquiryBox->toPlainText();
         QString insert_query = "INSERT INTO enquiry (name, phone, email, details, time, date) VALUES (:name, :phone, :email, :details, CURRENT_TIME, CURRENT_DATE);";
 
         QSqlQuery query;
-
         query.prepare(insert_query);
-
         query.bindValue(":name", name);
         query.bindValue(":phone", phone);
         query.bindValue(":email", email);
         query.bindValue(":details", details);
-
         query.exec();
 
         ui->details_name->setEnabled(false);
@@ -287,42 +142,38 @@ void userpage::on_submitBtn_clicked()
         ui->details_address->setEnabled(false);
         ui->details_email->setEnabled(false);
         ui->details_password->setEnabled(false);
+
+        QString enquiry = "Enquiry Submitted";
+        QMessageBox::information(this,"Enquiry", enquiry);
+        ui->enquiryBox->clear();
     }
-
-    db.close();
-
-    QString enquiry = "Enquiry Submitted";
-    QMessageBox::information(this,"Enquiry", enquiry);
-    ui->enquiryBox->clear();
 }
-
-
 
 void userpage::on_checkoutBtn_clicked()
 {
     int row = 0;
     int total = ui->list2->rowCount();
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
-    db.open();
 
-    if (db.isOpen()) {
+    QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME);";
+    QString update_books = "UPDATE books SET quantity = quantity - 1 WHERE book_id = :book_id;";
+    QSqlQuery query;
+    QSqlQuery update;
 
-        QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME);";
-        QString update_books = "UPDATE books SET quantity = quantity - 1 WHERE book_id = :book_id;";
-        QSqlQuery query;
-        query.prepare(insert_borrowed);
-        query.bindValue(":user_id", user_id);
-        ui->list2->showRow(0);
-        while (row < total) {
-            QString book_id = ui->list2->item(row, 0)->text();
-            query.bindValue(":book_id", book_id);
-            query.exec();
-            row++;
-        }
+    query.prepare(insert_borrowed);
+    update.prepare(update_books);
+    query.bindValue(":user_id", user_id);
+    ui->list2->showRow(0);
+
+    while (row < total) {
+        QString book_id = ui->list2->item(row, 0)->text();
+        query.bindValue(":book_id", book_id);
+        update.bindValue(":book_id", book_id);
+        query.exec();
+        update.exec();
+        row++;
     }
+
     ui->list2->hideRow(0);
-    db.close();
 
     QString book = "Book Successfully Checked Out";
     QString books = "Books Successfully Checked Out";
@@ -336,69 +187,85 @@ void userpage::on_checkoutBtn_clicked()
     }
 
     ui->list2->setRowCount(0);
+    populate_existingbooks();
+}
 
-    //update quantity in books_database
-
-
-    //update MyAccount ui
-
-
+void userpage::background_setup()
+{
+    QMainWindow::showFullScreen();
+    QPixmap background("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/bookcase-bg.jpg");
+    QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
+    image.fill(Qt::transparent); //fills with transparent
+    QPainter p(&image);
+    p.setOpacity(0.5); // set opacity from 0.0 to 1.0, where 0.0 is fully transparent and 1.0 is fully opaque.
+    p.drawPixmap(0, 0, background); // given pixmap into the paint device.
+    p.end();
+    background = background.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Window, image);
+    this->setPalette(palette);
 }
 
 void userpage::button_setup()
 {
+    ui->details_name->setEnabled(false);
+    ui->details_phone->setEnabled(false);
+    ui->details_address->setEnabled(false);
+    ui->details_email->setEnabled(false);
+    ui->details_password->setEnabled(false);
+
     //button style
-    QPixmap up("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/add2.png");
+    QPixmap up("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/add2.png");
     QIcon ButtonIcon(up);
     ui->button1->setIcon(ButtonIcon);
     ui->button1->setIconSize(QSize(65, 65));
 
-    QPixmap up1("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/remove3.png");
+    QPixmap up1("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/remove3.png");
     QIcon ButtonIcon1(up1);
     ui->button2->setIcon(ButtonIcon1);
     ui->button2->setIconSize(QSize(65, 65));
 
-    QPixmap up2("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/back.png");
+    QPixmap up2("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/back.png");
     QIcon ButtonIcon2(up2);
     ui->logoutBtn->setIcon(ButtonIcon2);
     ui->logoutBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up3("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/contact_us.png");
+    QPixmap up3("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/contact_us.png");
     QIcon ButtonIcon3(up3);
     ui->contactBtn->setIcon(ButtonIcon3);
     ui->contactBtn->setIconSize(QSize(75, 75));
 
-    QPixmap up4("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/books_logo.png");
+    QPixmap up4("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/books_logo.png");
     QIcon ButtonIcon4(up4);
     ui->booksBtn->setIcon(ButtonIcon4);
     ui->booksBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up5("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/your_account.png");
+    QPixmap up5("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/your_account.png");
     QIcon ButtonIcon5(up5);
     ui->accountBtn->setIcon(ButtonIcon5);
     ui->accountBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up6("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/submit.png");
+    QPixmap up6("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/submit.png");
     QIcon ButtonIcon6(up6);
     ui->submitBtn->setIcon(ButtonIcon6);
     ui->submitBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up7("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/checkout.png");
+    QPixmap up7("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/checkout.png");
     QIcon ButtonIcon7(up7);
     ui->checkoutBtn->setIcon(ButtonIcon7);
     ui->checkoutBtn->setIconSize(QSize(80, 80));
 
-    QPixmap up8("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/edit.png");
+    QPixmap up8("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/edit.png");
     QIcon ButtonIcon8(up8);
     ui->editBtn->setIcon(ButtonIcon8);
     ui->editBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up9("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/save.png");
+    QPixmap up9("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/save.png");
     QIcon ButtonIcon9(up9);
     ui->saveBtn->setIcon(ButtonIcon9);
     ui->saveBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up10("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/return.png");
+    QPixmap up10("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/return.png");
     QIcon ButtonIcon10(up10);
     ui->returnBtn->setIcon(ButtonIcon10);
     ui->returnBtn->setIconSize(QSize(75, 75));
@@ -420,7 +287,7 @@ void userpage::list_setup()
     ui->list2->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     QStringList borrowed_header;
-    borrowed_header << "Book ID" << "Title" << "Author";
+    borrowed_header << "Book ID" << "Title" << "Author" << "Due Date";
     ui->existing_books->setHorizontalHeaderLabels(borrowed_header);
     ui->existing_books->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->existing_books->setColumnHidden(0, true);
@@ -475,9 +342,143 @@ void userpage::list_setup()
     ui->list1->verticalHeader()->setVisible(false);
     ui->list2->verticalHeader()->setVisible(false);
     ui->existing_books->verticalHeader()->setVisible(false);
-
-
 }
 
+void userpage::file_function()
+{
+    QString filename = "user_id.txt";
+    QFile file(filename);
 
+    qInfo() << "Exists:" << file.exists();
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        userpage::user_id = file.readAll();
+        file.close();
+    }
+    else
+    {
+        qInfo() << file.errorString();
+    }
+}
+
+void userpage::size_of_lists()
+{
+    QSqlQuery query_size;
+    query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
+    query_size.first();
+    int count = query_size.value(0).toInt();
+    ui->list1->setRowCount(count);
+    ui->list1->setColumnCount(4);
+    ui->list2->setRowCount(0);
+    ui->list2->setColumnCount(4);
+}
+
+void userpage::populate_booktable()
+{
+    int row = 0;
+    QSqlQuery query;
+    query.exec("SELECT * FROM books WHERE quantity > 0;");
+    while(query.next()) {
+
+        QTableWidgetItem *book_id = new QTableWidgetItem();
+        QTableWidgetItem *title = new QTableWidgetItem();
+        QTableWidgetItem *author = new QTableWidgetItem();
+        QTableWidgetItem *description = new QTableWidgetItem();
+
+        book_id->setText(query.value(0).toString());
+        ui->list1->setItem(row, 0, book_id);
+        title->setText(query.value(1).toString());
+        ui->list1->setItem(row, 1, title);
+        author->setText(query.value(2).toString());
+        ui->list1->setItem(row, 2, author);
+        description->setText(query.value(3).toString());
+        ui->list1->setItem(row, 3, description);
+        row++;
+    }
+}
+
+void userpage::populate_details()
+{
+    QSqlQuery query;
+    QString select = "SELECT * FROM users WHERE user_id = :user_id;";
+    query.prepare(select);
+    query.bindValue(":user_id", user_id);
+    query.exec();
+    query.first();
+
+    ui->details_name->setText(query.value(1).toString());
+    ui->userpage_title->setText("Hi " + query.value(1).toString());
+    ui->details_phone->setText(query.value(2).toString());
+    ui->details_address->setText(query.value(3).toString());
+    ui->details_email->setText(query.value(4).toString());
+    ui->details_password->setText(query.value(5).toString());
+}
+
+void userpage::populate_existingbooks()
+{
+    QSqlQuery query;
+    QString borrowed_count = "SELECT COUNT (*) FROM borrowed_books WHERE user_id = :user_id;";
+    query.prepare(borrowed_count);
+    query.bindValue(":user_id", user_id);
+    query.exec();
+    query.first();
+    int count1 = query.value(0).toInt();
+
+    int row1 = 0;
+    ui->existing_books->setRowCount(count1);
+    ui->existing_books->setColumnCount(4);
+
+    QString borrowed_query = "SELECT books.book_id, books.title, books.author from borrowed_books JOIN books where user_id = :user_id AND borrowed_books.book_id = books.book_id;";
+    query.prepare(borrowed_query);
+    query.bindValue(":user_id", user_id);
+    query.exec();
+
+    while (query.next()) {
+        QTableWidgetItem *book_id = new QTableWidgetItem();
+        QTableWidgetItem *title = new QTableWidgetItem();
+        QTableWidgetItem *author = new QTableWidgetItem();
+
+        book_id->setText(query.value(0).toString());
+        ui->existing_books->setItem(row1, 0, book_id);
+        title->setText(query.value(1).toString());
+        ui->existing_books->setItem(row1, 1, title);
+        author->setText(query.value(2).toString());
+        ui->existing_books->setItem(row1, 2, author);
+        row1++;
+    }
+}
+
+void userpage::on_returnBtn_clicked()
+{
+    //1 check to make sure an item is selected
+    if (!ui->existing_books->selectedItems().empty()) {
+        //2 remove book from borrowed_book table
+        ui->existing_books->showRow(0);
+        QString borrowed_id = ui->existing_books->item(ui->existing_books->currentRow(), 0)->text();
+        ui->existing_books->hideRow(0);
+
+        //then SQL query to remove the borrowed_books entry
+        QSqlQuery query;
+        QString remove = "DELETE FROM borrowed_books WHERE user_id = :user_id AND book_id = :book_id;";
+        query.prepare(remove);
+        query.bindValue(":user_id", user_id);
+        query.bindValue(":book_id", borrowed_id);
+        query.exec();
+
+        //SQL query to increase quantity in books table
+        QString update_books = "UPDATE books SET quantity = quantity + 1 WHERE book_id = :book_id;";
+        query.prepare(update_books);
+        query.bindValue(":book_id", borrowed_id);
+        query.exec();
+        size_of_lists();
+        populate_booktable();
+
+        //4 call populate_existingbooks to refresh
+        populate_existingbooks();
+
+        QString book = "Book Successfully Returned";
+        QMessageBox::information(this,"Return", book);
+    }
+}
 
