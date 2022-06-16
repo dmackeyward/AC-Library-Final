@@ -8,6 +8,7 @@ login::login(QWidget *parent) :
 
     ui->setupUi(this);
     background_setup();
+    ui->email->setFocus();
 
 }
 
@@ -102,6 +103,9 @@ void login::on_loginBtn_clicked()
         message = "Login failed";
         QMessageBox::information(this,"Login", message);
     }
+
+    ui->email->clear();
+    ui->password->clear();
 }
 
 void login::keyPressEvent(QKeyEvent *event)
@@ -120,7 +124,7 @@ login::~login()
 void login::background_setup()
 {
     QMainWindow::showFullScreen();
-    QPixmap background("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/bookcase-bg.jpg");
+    QPixmap background("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/bookcase-bg.jpg");
     QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
     image.fill(Qt::transparent); //fills with transparent
     QPainter p(&image);

@@ -79,6 +79,7 @@ void userpage::on_accountBtn_clicked()
 
 void userpage::on_logoutBtn_clicked()
 {
+
     this->close();
 }
 
@@ -154,7 +155,7 @@ void userpage::on_checkoutBtn_clicked()
     int row = 0;
     int total = ui->list2->rowCount();
 
-    QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME);";
+    QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed, due_date) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME, DATE(CURRENT_DATE, '+30 days'));";
     QString update_books = "UPDATE books SET quantity = quantity - 1 WHERE book_id = :book_id;";
     QSqlQuery query;
     QSqlQuery update;
@@ -193,7 +194,7 @@ void userpage::on_checkoutBtn_clicked()
 void userpage::background_setup()
 {
     QMainWindow::showFullScreen();
-    QPixmap background("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/bookcase-bg.jpg");
+    QPixmap background("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/bookcase-bg.jpg");
     QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
     image.fill(Qt::transparent); //fills with transparent
     QPainter p(&image);
@@ -215,57 +216,57 @@ void userpage::button_setup()
     ui->details_password->setEnabled(false);
 
     //button style
-    QPixmap up("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/add2.png");
+    QPixmap up("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/add2.png");
     QIcon ButtonIcon(up);
     ui->button1->setIcon(ButtonIcon);
     ui->button1->setIconSize(QSize(65, 65));
 
-    QPixmap up1("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/remove3.png");
+    QPixmap up1("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/remove3.png");
     QIcon ButtonIcon1(up1);
     ui->button2->setIcon(ButtonIcon1);
     ui->button2->setIconSize(QSize(65, 65));
 
-    QPixmap up2("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/back.png");
+    QPixmap up2("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/back.png");
     QIcon ButtonIcon2(up2);
     ui->logoutBtn->setIcon(ButtonIcon2);
     ui->logoutBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up3("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/contact_us.png");
+    QPixmap up3("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/contact_us.png");
     QIcon ButtonIcon3(up3);
     ui->contactBtn->setIcon(ButtonIcon3);
     ui->contactBtn->setIconSize(QSize(75, 75));
 
-    QPixmap up4("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/books_logo.png");
+    QPixmap up4("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/books_logo.png");
     QIcon ButtonIcon4(up4);
     ui->booksBtn->setIcon(ButtonIcon4);
     ui->booksBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up5("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/your_account.png");
+    QPixmap up5("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/your_account.png");
     QIcon ButtonIcon5(up5);
     ui->accountBtn->setIcon(ButtonIcon5);
     ui->accountBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up6("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/submit.png");
+    QPixmap up6("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/submit.png");
     QIcon ButtonIcon6(up6);
     ui->submitBtn->setIcon(ButtonIcon6);
     ui->submitBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up7("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/checkout.png");
+    QPixmap up7("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/checkout.png");
     QIcon ButtonIcon7(up7);
     ui->checkoutBtn->setIcon(ButtonIcon7);
     ui->checkoutBtn->setIconSize(QSize(80, 80));
 
-    QPixmap up8("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/edit.png");
+    QPixmap up8("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/edit.png");
     QIcon ButtonIcon8(up8);
     ui->editBtn->setIcon(ButtonIcon8);
     ui->editBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up9("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/save.png");
+    QPixmap up9("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/save.png");
     QIcon ButtonIcon9(up9);
     ui->saveBtn->setIcon(ButtonIcon9);
     ui->saveBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up10("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/return.png");
+    QPixmap up10("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/return.png");
     QIcon ButtonIcon10(up10);
     ui->returnBtn->setIcon(ButtonIcon10);
     ui->returnBtn->setIconSize(QSize(75, 75));
@@ -417,6 +418,7 @@ void userpage::populate_details()
 
 void userpage::populate_existingbooks()
 {
+    ui->existing_books->setRowCount(0);
     QSqlQuery query;
     QString borrowed_count = "SELECT COUNT (*) FROM borrowed_books WHERE user_id = :user_id;";
     query.prepare(borrowed_count);
@@ -429,7 +431,7 @@ void userpage::populate_existingbooks()
     ui->existing_books->setRowCount(count1);
     ui->existing_books->setColumnCount(4);
 
-    QString borrowed_query = "SELECT books.book_id, books.title, books.author from borrowed_books JOIN books where user_id = :user_id AND borrowed_books.book_id = books.book_id;";
+    QString borrowed_query = "SELECT books.book_id, books.title, books.author, strftime('%d/%m/%Y',due_date) from borrowed_books JOIN books where user_id = :user_id AND borrowed_books.book_id = books.book_id;";
     query.prepare(borrowed_query);
     query.bindValue(":user_id", user_id);
     query.exec();
@@ -438,6 +440,7 @@ void userpage::populate_existingbooks()
         QTableWidgetItem *book_id = new QTableWidgetItem();
         QTableWidgetItem *title = new QTableWidgetItem();
         QTableWidgetItem *author = new QTableWidgetItem();
+        QTableWidgetItem *due_date = new QTableWidgetItem();
 
         book_id->setText(query.value(0).toString());
         ui->existing_books->setItem(row1, 0, book_id);
@@ -445,6 +448,8 @@ void userpage::populate_existingbooks()
         ui->existing_books->setItem(row1, 1, title);
         author->setText(query.value(2).toString());
         ui->existing_books->setItem(row1, 2, author);
+        due_date->setText(query.value(3).toString());
+        ui->existing_books->setItem(row1, 3, due_date);
         row1++;
     }
 }
@@ -455,7 +460,7 @@ void userpage::on_returnBtn_clicked()
     if (!ui->existing_books->selectedItems().empty()) {
         //2 remove book from borrowed_book table
         ui->existing_books->showRow(0);
-        QString borrowed_id = ui->existing_books->item(ui->existing_books->currentRow(), 0)->text();
+        QString book_id = ui->existing_books->item(ui->existing_books->currentRow(), 0)->text();
         ui->existing_books->hideRow(0);
 
         //then SQL query to remove the borrowed_books entry
@@ -463,13 +468,13 @@ void userpage::on_returnBtn_clicked()
         QString remove = "DELETE FROM borrowed_books WHERE user_id = :user_id AND book_id = :book_id;";
         query.prepare(remove);
         query.bindValue(":user_id", user_id);
-        query.bindValue(":book_id", borrowed_id);
+        query.bindValue(":book_id", book_id);
         query.exec();
 
         //SQL query to increase quantity in books table
         QString update_books = "UPDATE books SET quantity = quantity + 1 WHERE book_id = :book_id;";
         query.prepare(update_books);
-        query.bindValue(":book_id", borrowed_id);
+        query.bindValue(":book_id", book_id);
         query.exec();
         size_of_lists();
         populate_booktable();

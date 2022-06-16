@@ -10,7 +10,7 @@
 bool openDB(QSqlDatabase &db)
 {
     qInfo() << "Opening Database";
-    db.setDatabaseName("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/library-database.db");
+    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
 
     bool ok = db.open();
     if(ok)
