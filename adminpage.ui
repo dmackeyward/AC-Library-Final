@@ -404,7 +404,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QTableWidget" name="database"/>
+         <widget class="QTableView" name="view"/>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -504,35 +504,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="remove_2">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
-            </property>
-            <property name="text">
-             <string>Update Database:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="updateBtn">
-            <property name="styleSheet">
-             <string notr="true">background:transparent;</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
           </item>
          </layout>
         </item>

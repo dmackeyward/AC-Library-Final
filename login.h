@@ -11,7 +11,6 @@
 #include <QFile>
 #include "adminpage.h"
 #include "userpage.h"
-#include "database.h"
 #include <QKeyEvent>
 
 namespace Ui {

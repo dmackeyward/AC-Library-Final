@@ -8,7 +8,6 @@
 #include <QSqlError>
 #include <QFile>
 #include <QMessageBox>
-#include "database.h"
 
 
 namespace Ui {

@@ -2,5 +2,19 @@
     <qresource prefix="/images">
         <file>logo-auckland-council-white.png</file>
         <file>your_details.png</file>
+        <file>bookcase-bg.jpg</file>
+        <file>add2.png</file>
+        <file>back.png</file>
+        <file>books_logo.png</file>
+        <file>checkout.png</file>
+        <file>contact_us.png</file>
+        <file>edit.png</file>
+        <file>logout.png</file>
+        <file>remove3.png</file>
+        <file>report.png</file>
+        <file>return.png</file>
+        <file>save.png</file>
+        <file>submit.png</file>
+        <file>your_account.png</file>
     </qresource>
 </RCC>

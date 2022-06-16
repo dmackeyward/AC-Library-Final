@@ -5,12 +5,11 @@
 #include <QtSql>
 #include <QSqlDatabase>
 #include "login.h"
-#include "database.h"
 
 bool openDB(QSqlDatabase &db)
 {
     qInfo() << "Opening Database";
-    db.setDatabaseName("C:\\Users\\270163842\\OneDrive - UP Education\\Desktop\\Qt\\AC-Library-Final/library-database.db");
+    db.setDatabaseName("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/library-database.db");
 
     bool ok = db.open();
     if(ok)
@@ -23,6 +22,16 @@ bool openDB(QSqlDatabase &db)
     qInfo() << db.lastError().text();
 
     return false;
+}
+
+bool open()
+{
+        QSqlDatabase db = QSqlDatabase::database();
+        bool isOpen = db.isOpen();
+
+        qInfo() << "isOpen: " << isOpen;
+        return isOpen;
+
 }
 
 int main(int argc, char *argv[])
