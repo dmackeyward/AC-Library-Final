@@ -4,12 +4,15 @@
 #include <QDebug>
 #include <QtSql>
 #include <QSqlDatabase>
+#include <QDir>
 #include "login.h"
 
 bool openDB(QSqlDatabase &db)
 {
     qInfo() << "Opening Database";
-    db.setDatabaseName("C:\\Users\\biggi\\Documents\\GitHub\\AC-Library-Final/library-database.db");
+
+    QString targetDb = QDir::currentPath().append("/library-database.db");
+    db.setDatabaseName(targetDb);
 
     bool ok = db.open();
     if(ok)

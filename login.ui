@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_stacked">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -648,6 +648,9 @@ border-radius: 20px;</string>
                   <height>35</height>
                  </size>
                 </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
+                </property>
                </widget>
               </item>
              </layout>
@@ -900,13 +903,13 @@ border-radius: 20px;</string>
   <tabstop>password</tabstop>
   <tabstop>pushButton</tabstop>
   <tabstop>loginBtn</tabstop>
-  <tabstop>submitBtn</tabstop>
+  <tabstop>register_name</tabstop>
+  <tabstop>register_phone</tabstop>
   <tabstop>register_address</tabstop>
   <tabstop>register_email</tabstop>
   <tabstop>register_password</tabstop>
-  <tabstop>register_name</tabstop>
   <tabstop>cancel</tabstop>
-  <tabstop>register_phone</tabstop>
+  <tabstop>submitBtn</tabstop>
  </tabstops>
  <resources>
   <include location="images.qrc"/>

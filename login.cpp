@@ -38,20 +38,43 @@ void login::on_submitBtn_clicked()
     query.bindValue(":email", email);
     query.bindValue(":password", password);
 
-    if (query.exec()) {
-        qInfo() << "Query Successful";
+    //front end not null validation
+    if (ui->register_name->text().isEmpty() || ui->register_phone->text().isEmpty() || ui->register_address->text().isEmpty() || ui->register_email->text().isEmpty() || ui->register_password->text().isEmpty())
+    {
+        QString empty;
+        empty = "Please ensure all details are filled correctly";
+        QMessageBox::information(this,"Registration", empty);
     }
 
     else {
-        qDebug() << query.lastError();
+        bool ans = is_valid(email.toStdString());
+
+        if (ans) {
+            //check to see if the email already exists in the database
+
+
+            if (query.exec()) {
+                qInfo() << "Query Successful";
+            }
+
+            else {
+                qDebug() << query.lastError();
+            }
+
+            QString message;
+            message = "Registration successful";
+            QMessageBox::information(this,"Registration", message);
+
+            ui->stackedWidget->setCurrentIndex(0);
+            ui->email->setFocus();
+        }
+
+        else {
+            QString invalid_email;
+            invalid_email = "Invalid Email";
+            QMessageBox::information(this,"Registration", invalid_email);
+        }
     }
-
-    QString message;
-    message = "Registration successful";
-    QMessageBox::information(this,"Registration", message);
-
-    ui->stackedWidget->setCurrentIndex(0);
-
 }
 
 void login::on_loginBtn_clicked()
@@ -106,13 +129,16 @@ void login::on_loginBtn_clicked()
 
     ui->email->clear();
     ui->password->clear();
+    ui->email->setFocus();
 }
 
 void login::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
-    {
-        on_loginBtn_clicked();
+    if (ui->stackedWidget->currentIndex() == 0) {
+        if(event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+        {
+            on_loginBtn_clicked();
+        }
     }
 }
 
@@ -138,5 +164,45 @@ void login::background_setup()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
+bool login::isChar(char c)
+{
+    return ((c >= 'a' && c <= 'z')
+            || (c >= 'A' && c <= 'Z'));
+}
 
+bool login::isDigit(const char c)
+{
+    return (c >= '0' && c <= '9');
+}
+
+bool login::is_valid(std::string email)
+{
+    if (!isChar(email[0])) {
+        return 0;
+    }
+
+    int At = -1, Dot = -1;
+
+    for (int i = 0;
+         i < email.length(); i++) {
+
+        if (email[i] == '@') {
+
+            At = i;
+        }
+
+        else if (email[i] == '.') {
+
+            Dot = i;
+        }
+    }
+
+    if (At == -1 || Dot == -1)
+        return 0;
+
+    if (At > Dot)
+        return 0;
+
+    return !(Dot >= (email.length() - 1));
+}
 

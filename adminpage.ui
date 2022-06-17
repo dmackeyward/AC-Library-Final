@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1170</width>
+    <width>1231</width>
     <height>595</height>
    </rect>
   </property>
@@ -93,7 +93,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="userpage_title">
+           <widget class="QLabel" name="adminpage_title">
             <property name="font">
              <font>
               <family>Arial</family>
@@ -105,7 +105,7 @@
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
-             <string>Hi, admin</string>
+             <string>Hi, user</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -340,7 +340,7 @@
            <string notr="true">color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
-           <string>Report:</string>
+           <string>Export Data:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -422,7 +422,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="add">
+           <widget class="QLabel" name="addLbl">
             <property name="font">
              <font>
               <family>Arial</family>
@@ -464,7 +464,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="remove">
+           <widget class="QLabel" name="removeLbl">
             <property name="font">
              <font>
               <family>Arial</family>
@@ -613,7 +613,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1170</width>
+     <width>1231</width>
      <height>22</height>
     </rect>
    </property>

@@ -155,7 +155,7 @@ void userpage::on_checkoutBtn_clicked()
     int row = 0;
     int total = ui->list2->rowCount();
 
-    QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed, due_date) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME, DATE(CURRENT_DATE, '+30 days'));";
+    QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed, due_date, returned_status) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME, DATE(CURRENT_DATE, '+30 days'), 'no');";
     QString update_books = "UPDATE books SET quantity = quantity - 1 WHERE book_id = :book_id;";
     QSqlQuery query;
     QSqlQuery update;
@@ -343,6 +343,10 @@ void userpage::list_setup()
     ui->list1->verticalHeader()->setVisible(false);
     ui->list2->verticalHeader()->setVisible(false);
     ui->existing_books->verticalHeader()->setVisible(false);
+
+    ui->list1->setSortingEnabled(true);
+    ui->list2->setSortingEnabled(true);
+    ui->existing_books->setSortingEnabled(true);
 }
 
 void userpage::file_function()
@@ -397,6 +401,7 @@ void userpage::populate_booktable()
         ui->list1->setItem(row, 3, description);
         row++;
     }
+
 }
 
 void userpage::populate_details()
@@ -420,7 +425,7 @@ void userpage::populate_existingbooks()
 {
     ui->existing_books->setRowCount(0);
     QSqlQuery query;
-    QString borrowed_count = "SELECT COUNT (*) FROM borrowed_books WHERE user_id = :user_id;";
+    QString borrowed_count = "SELECT COUNT (*) FROM borrowed_books WHERE user_id = :user_id AND returned_status = 'no';";
     query.prepare(borrowed_count);
     query.bindValue(":user_id", user_id);
     query.exec();
@@ -431,7 +436,7 @@ void userpage::populate_existingbooks()
     ui->existing_books->setRowCount(count1);
     ui->existing_books->setColumnCount(4);
 
-    QString borrowed_query = "SELECT books.book_id, books.title, books.author, strftime('%d/%m/%Y',due_date) from borrowed_books JOIN books where user_id = :user_id AND borrowed_books.book_id = books.book_id;";
+    QString borrowed_query = "SELECT books.book_id, books.title, books.author, strftime('%d/%m/%Y',due_date) from borrowed_books JOIN books where user_id = :user_id AND borrowed_books.book_id = books.book_id AND returned_status = 'no';";
     query.prepare(borrowed_query);
     query.bindValue(":user_id", user_id);
     query.exec();
@@ -464,8 +469,16 @@ void userpage::on_returnBtn_clicked()
         ui->existing_books->hideRow(0);
 
         //then SQL query to remove the borrowed_books entry
+//        QSqlQuery query;
+//        QString remove = "DELETE FROM borrowed_books WHERE user_id = :user_id AND book_id = :book_id;";
+//        query.prepare(remove);
+//        query.bindValue(":user_id", user_id);
+//        query.bindValue(":book_id", book_id);
+//        query.exec();
+
+        //instead of remove the borrowed book i need to update the status
         QSqlQuery query;
-        QString remove = "DELETE FROM borrowed_books WHERE user_id = :user_id AND book_id = :book_id;";
+        QString remove = "UPDATE borrowed_books SET returned_status = 'yes' AND returned_date = CURRENT_DATE WHERE user_id = :user_id AND book_id = :book_id;";
         query.prepare(remove);
         query.bindValue(":user_id", user_id);
         query.bindValue(":book_id", book_id);

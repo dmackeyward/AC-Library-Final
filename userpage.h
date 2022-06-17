@@ -8,6 +8,7 @@
 #include <QSqlError>
 #include <QFile>
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 
 
 namespace Ui {
