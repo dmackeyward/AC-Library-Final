@@ -40,6 +40,7 @@ private:
     bool isChar(char c);
     bool isDigit(const char c);
     bool is_valid(std::string email);
+    bool checkIfExists(QString email);
 };
 
 #endif // LOGIN_H

@@ -36,8 +36,35 @@ void userpage::on_button1_clicked()
         ui->list2->setItem(targetRow, 2, ui->list1->takeItem(ui->list1->currentRow(), 2));
         ui->list2->setItem(targetRow, 3, ui->list1->takeItem(ui->list1->currentRow(), 3));
 
-        //remove row from list1
         ui->list1->removeRow(ui->list1->currentRow());
+
+        //quantity check
+        QSqlQuery query_size;
+        query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
+        query_size.first();
+        int count = query_size.value(0).toInt();
+        ui->list1->setRowCount(count);
+
+        int row = 0;
+        QSqlQuery query;
+        query.exec("SELECT * FROM books WHERE quantity > 0;");
+        while(query.next()) {
+
+            QTableWidgetItem *book_id = new QTableWidgetItem();
+            QTableWidgetItem *title = new QTableWidgetItem();
+            QTableWidgetItem *author = new QTableWidgetItem();
+            QTableWidgetItem *description = new QTableWidgetItem();
+
+            book_id->setText(query.value(0).toString());
+            ui->list1->setItem(row, 0, book_id);
+            title->setText(query.value(1).toString());
+            ui->list1->setItem(row, 1, title);
+            author->setText(query.value(2).toString());
+            ui->list1->setItem(row, 2, author);
+            description->setText(query.value(3).toString());
+            ui->list1->setItem(row, 3, description);
+            row++;
+        }
     }
 }
 
@@ -163,6 +190,7 @@ void userpage::on_checkoutBtn_clicked()
     query.prepare(insert_borrowed);
     update.prepare(update_books);
     query.bindValue(":user_id", user_id);
+
     ui->list2->showRow(0);
 
     while (row < total) {
@@ -189,6 +217,14 @@ void userpage::on_checkoutBtn_clicked()
 
     ui->list2->setRowCount(0);
     populate_existingbooks();
+
+    QSqlQuery query_size;
+    query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
+    query_size.first();
+    int count = query_size.value(0).toInt();
+    ui->list1->setRowCount(count);
+    ui->list1->setColumnCount(4);
+    populate_booktable();
 }
 
 void userpage::background_setup()
@@ -478,7 +514,7 @@ void userpage::on_returnBtn_clicked()
 
         //instead of remove the borrowed book i need to update the status
         QSqlQuery query;
-        QString remove = "UPDATE borrowed_books SET returned_status = 'yes' AND returned_date = CURRENT_DATE WHERE user_id = :user_id AND book_id = :book_id;";
+        QString remove = "UPDATE borrowed_books SET returned_status = 'yes', returned_date = CURRENT_DATE WHERE user_id = :user_id AND book_id = :book_id;";
         query.prepare(remove);
         query.bindValue(":user_id", user_id);
         query.bindValue(":book_id", book_id);

@@ -185,7 +185,7 @@
            <string notr="true">background:transparent;</string>
           </property>
           <property name="text">
-           <string>book database</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -227,7 +227,7 @@
            <string notr="true">background:transparent;</string>
           </property>
           <property name="text">
-           <string>user database</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -269,7 +269,7 @@
            <string notr="true">background:transparent;</string>
           </property>
           <property name="text">
-           <string>enquiry database</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -311,7 +311,7 @@
            <string notr="true">background:transparent;</string>
           </property>
           <property name="text">
-           <string>borrowed book database</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -353,7 +353,7 @@
            <string notr="true">background:transparent;</string>
           </property>
           <property name="text">
-           <string>report</string>
+           <string/>
           </property>
          </widget>
         </item>

@@ -164,6 +164,15 @@ void adminpage::on_borrowedBtn_clicked()
     ui->removeLbl->setText("Remove Entry");
     ui->view->reset();
     model = new QSqlTableModel;
+
+
+
+    //QSqlTableModel * tableModel = new QSqlTableModel(ui->view);
+    //QString MyQuery = "SELECT borrowed_id, users.email, books.title, date_borrowed, time_borrowed, due_date, returned_status, returned_date FROM borrowed_books JOIN books on books.book_id = borrowed_books.book_id JOIN users on users.user_id = borrowed_books.user_id;";
+    //model->setTable(MyQuery);
+    //model->setEditStrategy(QSqlTableModel::OnFieldChange);
+
+
     model->setTable("borrowed_books");
     model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->select();
@@ -173,14 +182,15 @@ void adminpage::on_borrowedBtn_clicked()
     model->setHeaderData(3, Qt::Horizontal, tr("Date Borrowed"));
     model->setHeaderData(4, Qt::Horizontal, tr("Time Borrowed"));
     model->setHeaderData(5, Qt::Horizontal, tr("Due Date"));
-    //ui->view->setModel(model);
+    model->setHeaderData(6, Qt::Horizontal, tr("Returned Status"));
+    model->setHeaderData(7, Qt::Horizontal, tr("Returned Date"));
+    //ui->view->setModel(queryModel);
     ui->view->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->view->verticalHeader()->setVisible(false);
 
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     ui->view->setModel(proxyModel);
-
     ui->view->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->view->verticalHeader()->setVisible(false);
     ui->view->setSortingEnabled(true);
@@ -208,8 +218,8 @@ void adminpage::on_booksBtn_clicked()
     model->setHeaderData(1, Qt::Horizontal, tr("Title"));
     model->setHeaderData(2, Qt::Horizontal, tr("Author"));
     model->setHeaderData(3, Qt::Horizontal, tr("Description"));
-    //model->setHeaderData(4, Qt::Horizontal, tr("Quantity"));
-    ui->view->setModel(model);
+    model->setHeaderData(4, Qt::Horizontal, tr("Quantity"));
+    //ui->view->setModel(model);
     ui->view->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->view->verticalHeader()->setVisible(false);
 
@@ -239,23 +249,45 @@ void adminpage::on_addBtn_clicked()
 void adminpage::on_removeBtn_clicked()
 {
     if (ui->view->currentIndex().isValid()) {
-        qDebug() << "Row Removed";
-        int row = ui->view->selectionModel()->currentIndex().row();
-        model->removeRow(row);
+
+        //this model works while the view is in order
+        //int row = ui->view->selectionModel()->currentIndex().row();
+        //model->removeRow(row);
+        //qDebug() << "Row Removed" << row;
+
+        int id = ui->view->model()->data(ui->view->model()->index(ui->view->selectionModel()->currentIndex().row(),0)).toInt();
+        qDebug() << "Item Removed (ID):" << id;
+        QSqlQuery query;
 
         if (table == "user") {
+            QString remove = "DELETE FROM users WHERE user_id = :id;";
+            query.prepare(remove);
+            query.bindValue(":id", id);
+            query.exec();
             on_userBtn_clicked();
         }
 
         else if (table == "enquiry") {
+            QString remove = "DELETE FROM enquiry WHERE enquiry_id = :id;";
+            query.prepare(remove);
+            query.bindValue(":id", id);
+            query.exec();
             on_enquiryBtn_clicked();
         }
 
         else if (table == "borrowed_books") {
+            QString remove = "DELETE FROM borrowed_books WHERE borrowed_id = :id;";
+            query.prepare(remove);
+            query.bindValue(":id", id);
+            query.exec();
             on_borrowedBtn_clicked();
         }
 
         else if (table == "books") {
+            QString remove = "DELETE FROM books WHERE book_id = :id;";
+            query.prepare(remove);
+            query.bindValue(":id", id);
+            query.exec();
             on_booksBtn_clicked();
         }
 
@@ -320,5 +352,3 @@ void adminpage::file_function()
 
     ui->adminpage_title->setText("Hi " + query.value(1).toString());
 }
-
-

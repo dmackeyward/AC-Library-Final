@@ -51,22 +51,34 @@ void login::on_submitBtn_clicked()
 
         if (ans) {
             //check to see if the email already exists in the database
+            if (checkIfExists(email)) {
+                if (query.exec()) {
+                    qInfo() << "Query Successful";
+                }
 
+                else {
+                    qDebug() << query.lastError();
+                }
 
-            if (query.exec()) {
-                qInfo() << "Query Successful";
+                QString message;
+                message = "Registration successful";
+                QMessageBox::information(this,"Registration", message);
+
+                //need to clear fields after submit
+                ui->register_name->clear();
+                ui->register_phone->clear();
+                ui->register_address->clear();
+                ui->register_email->clear();
+                ui->register_password->clear();
+                ui->stackedWidget->setCurrentIndex(0);
+                ui->email->setFocus();
             }
 
             else {
-                qDebug() << query.lastError();
+                QString email_already_taken;
+                email_already_taken = "Email Already Taken";
+                QMessageBox::information(this,"Registration", email_already_taken);
             }
-
-            QString message;
-            message = "Registration successful";
-            QMessageBox::information(this,"Registration", message);
-
-            ui->stackedWidget->setCurrentIndex(0);
-            ui->email->setFocus();
         }
 
         else {
@@ -205,4 +217,26 @@ bool login::is_valid(std::string email)
 
     return !(Dot >= (email.length() - 1));
 }
+
+bool login::checkIfExists(QString email) {
+    QSqlQuery query;
+    QString select = "SELECT COUNT (*) FROM users WHERE email = (:email);";
+    query.prepare(select);
+    query.bindValue(":email", email);
+    query.exec();
+    query.first();
+    int value = query.value(0).toInt();
+
+    qDebug() << value;
+
+    if (value == 0) {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
+
+
 
