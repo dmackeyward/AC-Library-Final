@@ -21,74 +21,6 @@ userpage::~userpage()
     delete ui;
 }
 
-void userpage::on_button1_clicked()
-{
-    if (!ui->list1->selectedItems().empty()) {
-        //target list > row count
-        int targetRow = ui->list2->rowCount();
-
-        //target list > insert
-        ui->list2->insertRow(targetRow);
-
-        //take and set items
-        ui->list2->setItem(targetRow, 0, ui->list1->takeItem(ui->list1->currentRow(), 0));
-        ui->list2->setItem(targetRow, 1, ui->list1->takeItem(ui->list1->currentRow(), 1));
-        ui->list2->setItem(targetRow, 2, ui->list1->takeItem(ui->list1->currentRow(), 2));
-        ui->list2->setItem(targetRow, 3, ui->list1->takeItem(ui->list1->currentRow(), 3));
-
-        ui->list1->removeRow(ui->list1->currentRow());
-
-        //quantity check
-        QSqlQuery query_size;
-        query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
-        query_size.first();
-        int count = query_size.value(0).toInt();
-        ui->list1->setRowCount(count);
-
-        int row = 0;
-        QSqlQuery query;
-        query.exec("SELECT * FROM books WHERE quantity > 0;");
-        while(query.next()) {
-
-            QTableWidgetItem *book_id = new QTableWidgetItem();
-            QTableWidgetItem *title = new QTableWidgetItem();
-            QTableWidgetItem *author = new QTableWidgetItem();
-            QTableWidgetItem *description = new QTableWidgetItem();
-
-            book_id->setText(query.value(0).toString());
-            ui->list1->setItem(row, 0, book_id);
-            title->setText(query.value(1).toString());
-            ui->list1->setItem(row, 1, title);
-            author->setText(query.value(2).toString());
-            ui->list1->setItem(row, 2, author);
-            description->setText(query.value(3).toString());
-            ui->list1->setItem(row, 3, description);
-            row++;
-        }
-    }
-}
-
-void userpage::on_button2_clicked()
-{
-    if (!ui->list2->selectedItems().empty()) {
-
-        //target list > row count
-        int targetRow = ui->list1->rowCount();
-
-        //target list > insert
-        ui->list1->insertRow(targetRow);
-
-        //take and set items
-        ui->list1->setItem(targetRow, 0, ui->list2->takeItem(ui->list2->currentRow(), 0));
-        ui->list1->setItem(targetRow, 1, ui->list2->takeItem(ui->list2->currentRow(), 1));
-        ui->list1->setItem(targetRow, 2, ui->list2->takeItem(ui->list2->currentRow(), 2));
-        ui->list1->setItem(targetRow, 3, ui->list2->takeItem(ui->list2->currentRow(), 3));
-
-        //remove row from list1
-        ui->list2->removeRow(ui->list2->currentRow());
-    }
-}
-
 void userpage::on_booksBtn_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -254,13 +186,13 @@ void userpage::button_setup()
     //button style
     QPixmap up("://images/add2.png");
     QIcon ButtonIcon(up);
-    ui->button1->setIcon(ButtonIcon);
-    ui->button1->setIconSize(QSize(65, 65));
+    ui->addBookBtn->setIcon(ButtonIcon);
+    ui->addBookBtn->setIconSize(QSize(65, 65));
 
     QPixmap up1("://images/remove3.png");
     QIcon ButtonIcon1(up1);
-    ui->button2->setIcon(ButtonIcon1);
-    ui->button2->setIconSize(QSize(65, 65));
+    ui->removeBookBtn->setIcon(ButtonIcon1);
+    ui->removeBookBtn->setIconSize(QSize(65, 65));
 
     QPixmap up2("://images/back.png");
     QIcon ButtonIcon2(up2);
@@ -533,6 +465,74 @@ void userpage::on_returnBtn_clicked()
 
         QString book = "Book Successfully Returned";
         QMessageBox::information(this,"Return", book);
+    }
+}
+
+void userpage::on_addBookBtn_clicked()
+{
+    if (!ui->list1->selectedItems().empty()) {
+        //target list > row count
+        int targetRow = ui->list2->rowCount();
+
+        //target list > insert
+        ui->list2->insertRow(targetRow);
+
+        //take and set items
+        ui->list2->setItem(targetRow, 0, ui->list1->takeItem(ui->list1->currentRow(), 0));
+        ui->list2->setItem(targetRow, 1, ui->list1->takeItem(ui->list1->currentRow(), 1));
+        ui->list2->setItem(targetRow, 2, ui->list1->takeItem(ui->list1->currentRow(), 2));
+        ui->list2->setItem(targetRow, 3, ui->list1->takeItem(ui->list1->currentRow(), 3));
+
+        ui->list1->removeRow(ui->list1->currentRow());
+
+        //quantity check
+        QSqlQuery query_size;
+        query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
+        query_size.first();
+        int count = query_size.value(0).toInt();
+        ui->list1->setRowCount(count);
+
+        int row = 0;
+        QSqlQuery query;
+        query.exec("SELECT * FROM books WHERE quantity > 0;");
+        while(query.next()) {
+
+            QTableWidgetItem *book_id = new QTableWidgetItem();
+            QTableWidgetItem *title = new QTableWidgetItem();
+            QTableWidgetItem *author = new QTableWidgetItem();
+            QTableWidgetItem *description = new QTableWidgetItem();
+
+            book_id->setText(query.value(0).toString());
+            ui->list1->setItem(row, 0, book_id);
+            title->setText(query.value(1).toString());
+            ui->list1->setItem(row, 1, title);
+            author->setText(query.value(2).toString());
+            ui->list1->setItem(row, 2, author);
+            description->setText(query.value(3).toString());
+            ui->list1->setItem(row, 3, description);
+            row++;
+        }
+    }
+}
+
+void userpage::on_removeBookBtn_clicked()
+{
+    if (!ui->list2->selectedItems().empty()) {
+
+        //target list > row count
+        int targetRow = ui->list1->rowCount();
+
+        //target list > insert
+        ui->list1->insertRow(targetRow);
+
+        //take and set items
+        ui->list1->setItem(targetRow, 0, ui->list2->takeItem(ui->list2->currentRow(), 0));
+        ui->list1->setItem(targetRow, 1, ui->list2->takeItem(ui->list2->currentRow(), 1));
+        ui->list1->setItem(targetRow, 2, ui->list2->takeItem(ui->list2->currentRow(), 2));
+        ui->list1->setItem(targetRow, 3, ui->list2->takeItem(ui->list2->currentRow(), 3));
+
+        //remove row from list1
+        ui->list2->removeRow(ui->list2->currentRow());
     }
 }
 

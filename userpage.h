@@ -25,8 +25,6 @@ public:
 
 private slots:
 
-    void on_button1_clicked();
-    void on_button2_clicked();
     void on_booksBtn_clicked();
     void on_contactBtn_clicked();
     void on_accountBtn_clicked();
@@ -35,7 +33,12 @@ private slots:
     void on_saveBtn_clicked();
     void on_submitBtn_clicked();
     void on_checkoutBtn_clicked();
+    void on_returnBtn_clicked();
+    void on_addBookBtn_clicked();
+    void on_removeBookBtn_clicked();
 
+private:
+    Ui::userpage *ui;
     void background_setup();
     void button_setup();
     void list_setup();
@@ -44,12 +47,6 @@ private slots:
     void populate_booktable();
     void populate_details();
     void populate_existingbooks();
-
-    void on_returnBtn_clicked();
-
-private:
-    Ui::userpage *ui;
-
     QString user_id;
     QString user_name;
 };

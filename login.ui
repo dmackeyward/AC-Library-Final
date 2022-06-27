@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login_stacked">
        <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -235,7 +235,7 @@
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="registerBtn">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                   <horstretch>0</horstretch>
@@ -901,7 +901,7 @@ border-radius: 20px;</string>
  <tabstops>
   <tabstop>email</tabstop>
   <tabstop>password</tabstop>
-  <tabstop>pushButton</tabstop>
+  <tabstop>registerBtn</tabstop>
   <tabstop>loginBtn</tabstop>
   <tabstop>register_name</tabstop>
   <tabstop>register_phone</tabstop>

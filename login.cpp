@@ -12,11 +12,6 @@ login::login(QWidget *parent) :
 
 }
 
-void login::on_pushButton_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(1);
-}
-
 void login::on_cancel_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -238,5 +233,8 @@ bool login::checkIfExists(QString email) {
     }
 }
 
-
+void login::on_registerBtn_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
 

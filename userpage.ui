@@ -386,7 +386,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="button1">
+               <widget class="QPushButton" name="addBookBtn">
                 <property name="styleSheet">
                  <string notr="true">background:transparent;</string>
                 </property>
@@ -428,7 +428,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="button2">
+               <widget class="QPushButton" name="removeBookBtn">
                 <property name="styleSheet">
                  <string notr="true">background:transparent;</string>
                 </property>

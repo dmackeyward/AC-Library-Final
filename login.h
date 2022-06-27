@@ -27,20 +27,20 @@ public:
 
 private slots:
 
-    void background_setup();
-    void on_pushButton_clicked();
     void on_cancel_clicked();
     void on_submitBtn_clicked();
     void on_loginBtn_clicked();
-    void keyPressEvent(QKeyEvent *event) override;
+    void on_registerBtn_clicked();
 
 private:
     Ui::login *ui;
 
+    void background_setup();
     bool isChar(char c);
     bool isDigit(const char c);
     bool is_valid(std::string email);
     bool checkIfExists(QString email);
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // LOGIN_H
