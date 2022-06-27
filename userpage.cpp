@@ -333,6 +333,7 @@ void userpage::file_function()
     {
         qInfo() << file.errorString();
     }
+    file.resize(0);
 }
 
 void userpage::size_of_lists()

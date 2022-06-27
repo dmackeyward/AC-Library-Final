@@ -343,6 +343,7 @@ void adminpage::file_function()
     {
         qInfo() << file.errorString();
     }
+    file.resize(0);
     QSqlQuery query;
     QString select = "SELECT * FROM users WHERE user_id = :user_id;";
     query.prepare(select);
