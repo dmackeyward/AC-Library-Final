@@ -39,7 +39,15 @@ void userpage::on_accountBtn_clicked()
 void userpage::on_logoutBtn_clicked()
 {
 
-    this->close();
+    if (ui->list2->rowCount() > 0) {
+        QString error = "Please empty your cart first";
+        QMessageBox::information(this,"Log-Out", error);
+    }
+
+    else {
+        this->close();
+    }
+
 }
 
 void userpage::on_editBtn_clicked()
@@ -115,12 +123,10 @@ void userpage::on_checkoutBtn_clicked()
     int total = ui->list2->rowCount();
 
     QString insert_borrowed = "INSERT INTO borrowed_books (user_id, book_id, date_borrowed, time_borrowed, due_date, returned_status) VALUES (:user_id, :book_id, CURRENT_DATE, CURRENT_TIME, DATE(CURRENT_DATE, '+30 days'), 'no');";
-    QString update_books = "UPDATE books SET quantity = quantity - 1 WHERE book_id = :book_id;";
     QSqlQuery query;
     QSqlQuery update;
 
     query.prepare(insert_borrowed);
-    update.prepare(update_books);
     query.bindValue(":user_id", user_id);
 
     ui->list2->showRow(0);
@@ -128,9 +134,7 @@ void userpage::on_checkoutBtn_clicked()
     while (row < total) {
         QString book_id = ui->list2->item(row, 0)->text();
         query.bindValue(":book_id", book_id);
-        update.bindValue(":book_id", book_id);
         query.exec();
-        update.exec();
         row++;
     }
 
@@ -370,7 +374,6 @@ void userpage::populate_booktable()
         ui->list1->setItem(row, 3, description);
         row++;
     }
-
 }
 
 void userpage::populate_details()
@@ -430,22 +433,12 @@ void userpage::populate_existingbooks()
 
 void userpage::on_returnBtn_clicked()
 {
-    //1 check to make sure an item is selected
     if (!ui->existing_books->selectedItems().empty()) {
-        //2 remove book from borrowed_book table
         ui->existing_books->showRow(0);
         QString book_id = ui->existing_books->item(ui->existing_books->currentRow(), 0)->text();
         ui->existing_books->hideRow(0);
 
-        //then SQL query to remove the borrowed_books entry
-//        QSqlQuery query;
-//        QString remove = "DELETE FROM borrowed_books WHERE user_id = :user_id AND book_id = :book_id;";
-//        query.prepare(remove);
-//        query.bindValue(":user_id", user_id);
-//        query.bindValue(":book_id", book_id);
-//        query.exec();
-
-        //instead of remove the borrowed book i need to update the status
+        //update the status to yes + date
         QSqlQuery query;
         QString remove = "UPDATE borrowed_books SET returned_status = 'yes', returned_date = CURRENT_DATE WHERE user_id = :user_id AND book_id = :book_id;";
         query.prepare(remove);
@@ -453,15 +446,16 @@ void userpage::on_returnBtn_clicked()
         query.bindValue(":book_id", book_id);
         query.exec();
 
-        //SQL query to increase quantity in books table
+        //increase quantity in books table to quantity + 1
+        QSqlQuery query1;
         QString update_books = "UPDATE books SET quantity = quantity + 1 WHERE book_id = :book_id;";
-        query.prepare(update_books);
-        query.bindValue(":book_id", book_id);
-        query.exec();
+        query1.prepare(update_books);
+        query1.bindValue(":book_id", book_id);
+        qDebug() << "here2" << book_id;
+        query1.exec();
+
         size_of_lists();
         populate_booktable();
-
-        //4 call populate_existingbooks to refresh
         populate_existingbooks();
 
         QString book = "Book Successfully Returned";
@@ -472,21 +466,28 @@ void userpage::on_returnBtn_clicked()
 void userpage::on_addBookBtn_clicked()
 {
     if (!ui->list1->selectedItems().empty()) {
-        //target list > row count
+
+        QString book_id = 0;
+        book_id = ui->list1->item(ui->list1->currentRow(), 0)->text();
+        qDebug() << book_id;
+
+        //adding a row to list2, setting the item using 'takeitem', removing current row
         int targetRow = ui->list2->rowCount();
-
-        //target list > insert
         ui->list2->insertRow(targetRow);
-
-        //take and set items
         ui->list2->setItem(targetRow, 0, ui->list1->takeItem(ui->list1->currentRow(), 0));
         ui->list2->setItem(targetRow, 1, ui->list1->takeItem(ui->list1->currentRow(), 1));
         ui->list2->setItem(targetRow, 2, ui->list1->takeItem(ui->list1->currentRow(), 2));
         ui->list2->setItem(targetRow, 3, ui->list1->takeItem(ui->list1->currentRow(), 3));
 
+        //could do a query here to reduce quantity by 1 for the item about to be removed
+        QString update_books = "UPDATE books SET quantity = quantity - 1 WHERE book_id = :book_id;";
+        QSqlQuery update;
+        update.prepare(update_books);
+        update.bindValue(":book_id", book_id);
+        update.exec();
         ui->list1->removeRow(ui->list1->currentRow());
 
-        //quantity check
+        //this is repopulating the list1
         QSqlQuery query_size;
         query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
         query_size.first();
@@ -520,20 +521,60 @@ void userpage::on_removeBookBtn_clicked()
 {
     if (!ui->list2->selectedItems().empty()) {
 
-        //target list > row count
-        int targetRow = ui->list1->rowCount();
+//        //target list > row count
+//        int targetRow = ui->list1->rowCount();
 
-        //target list > insert
-        ui->list1->insertRow(targetRow);
+//        //target list > insert
+//        ui->list1->insertRow(targetRow);
 
-        //take and set items
-        ui->list1->setItem(targetRow, 0, ui->list2->takeItem(ui->list2->currentRow(), 0));
-        ui->list1->setItem(targetRow, 1, ui->list2->takeItem(ui->list2->currentRow(), 1));
-        ui->list1->setItem(targetRow, 2, ui->list2->takeItem(ui->list2->currentRow(), 2));
-        ui->list1->setItem(targetRow, 3, ui->list2->takeItem(ui->list2->currentRow(), 3));
+//        //take and set items
+//        ui->list1->setItem(targetRow, 0, ui->list2->takeItem(ui->list2->currentRow(), 0));
+//        ui->list1->setItem(targetRow, 1, ui->list2->takeItem(ui->list2->currentRow(), 1));
+//        ui->list1->setItem(targetRow, 2, ui->list2->takeItem(ui->list2->currentRow(), 2));
+//        ui->list1->setItem(targetRow, 3, ui->list2->takeItem(ui->list2->currentRow(), 3));
 
-        //remove row from list1
+//        //remove row from list1
+//        ui->list2->removeRow(ui->list2->currentRow());
+
+
+        QString book_id = 0;
+        book_id = ui->list2->item(ui->list2->currentRow(), 0)->text();
+        qDebug() << book_id;
+        QString update_books = "UPDATE books SET quantity = quantity + 1 WHERE book_id = :book_id;";
+        QSqlQuery update;
+        update.prepare(update_books);
+        update.bindValue(":book_id", book_id);
+        update.exec();
         ui->list2->removeRow(ui->list2->currentRow());
+
+        //this is repopulating the list1
+        QSqlQuery query_size;
+        query_size.exec("SELECT COUNT (*) FROM books WHERE quantity > 0;");
+        query_size.first();
+        int count = query_size.value(0).toInt();
+        ui->list1->setRowCount(count);
+
+        int row = 0;
+        QSqlQuery query;
+        query.exec("SELECT * FROM books WHERE quantity > 0;");
+        while(query.next()) {
+
+            QTableWidgetItem *book_id = new QTableWidgetItem();
+            QTableWidgetItem *title = new QTableWidgetItem();
+            QTableWidgetItem *author = new QTableWidgetItem();
+            QTableWidgetItem *description = new QTableWidgetItem();
+
+            book_id->setText(query.value(0).toString());
+            ui->list1->setItem(row, 0, book_id);
+            title->setText(query.value(1).toString());
+            ui->list1->setItem(row, 1, title);
+            author->setText(query.value(2).toString());
+            ui->list1->setItem(row, 2, author);
+            description->setText(query.value(3).toString());
+            ui->list1->setItem(row, 3, description);
+            row++;
+        }
+
     }
 }
 
