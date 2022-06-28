@@ -165,14 +165,6 @@ void adminpage::on_borrowedBtn_clicked()
     ui->view->reset();
     model = new QSqlTableModel;
 
-
-
-    //QSqlTableModel * tableModel = new QSqlTableModel(ui->view);
-    //QString MyQuery = "SELECT borrowed_id, users.email, books.title, date_borrowed, time_borrowed, due_date, returned_status, returned_date FROM borrowed_books JOIN books on books.book_id = borrowed_books.book_id JOIN users on users.user_id = borrowed_books.user_id;";
-    //model->setTable(MyQuery);
-    //model->setEditStrategy(QSqlTableModel::OnFieldChange);
-
-
     model->setTable("borrowed_books");
     model->setEditStrategy(QSqlTableModel::OnFieldChange);
     model->select();

@@ -521,22 +521,6 @@ void userpage::on_removeBookBtn_clicked()
 {
     if (!ui->list2->selectedItems().empty()) {
 
-//        //target list > row count
-//        int targetRow = ui->list1->rowCount();
-
-//        //target list > insert
-//        ui->list1->insertRow(targetRow);
-
-//        //take and set items
-//        ui->list1->setItem(targetRow, 0, ui->list2->takeItem(ui->list2->currentRow(), 0));
-//        ui->list1->setItem(targetRow, 1, ui->list2->takeItem(ui->list2->currentRow(), 1));
-//        ui->list1->setItem(targetRow, 2, ui->list2->takeItem(ui->list2->currentRow(), 2));
-//        ui->list1->setItem(targetRow, 3, ui->list2->takeItem(ui->list2->currentRow(), 3));
-
-//        //remove row from list1
-//        ui->list2->removeRow(ui->list2->currentRow());
-
-
         QString book_id = 0;
         book_id = ui->list2->item(ui->list2->currentRow(), 0)->text();
         qDebug() << book_id;
