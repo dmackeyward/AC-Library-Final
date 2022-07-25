@@ -157,7 +157,7 @@ login::~login()
 void login::background_setup()
 {
     QMainWindow::showFullScreen();
-    QPixmap background("://images/bookcase-bg.jpg");
+    QPixmap background("://images/assets/bookcase-bg.jpg");
     QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
     image.fill(Qt::transparent); //fills with transparent
     QPainter p(&image);

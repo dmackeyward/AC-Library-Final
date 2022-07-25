@@ -1,20 +1,20 @@
 <RCC>
     <qresource prefix="/images">
-        <file>logo-auckland-council-white.png</file>
-        <file>your_details.png</file>
-        <file>bookcase-bg.jpg</file>
-        <file>add2.png</file>
-        <file>back.png</file>
-        <file>books_logo.png</file>
-        <file>checkout.png</file>
-        <file>contact_us.png</file>
-        <file>edit.png</file>
-        <file>logout.png</file>
-        <file>remove3.png</file>
-        <file>report.png</file>
-        <file>return.png</file>
-        <file>save.png</file>
-        <file>submit.png</file>
-        <file>your_account.png</file>
+        <file>assets/add2.png</file>
+        <file>assets/back.png</file>
+        <file>assets/bookcase-bg.jpg</file>
+        <file>assets/books_logo.png</file>
+        <file>assets/checkout.png</file>
+        <file>assets/contact_us.png</file>
+        <file>assets/edit.png</file>
+        <file>assets/logo-auckland-council-white.png</file>
+        <file>assets/logout.png</file>
+        <file>assets/remove3.png</file>
+        <file>assets/report.png</file>
+        <file>assets/return.png</file>
+        <file>assets/save.png</file>
+        <file>assets/submit.png</file>
+        <file>assets/your_account.png</file>
+        <file>assets/your_details.png</file>
     </qresource>
 </RCC>

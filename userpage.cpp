@@ -166,7 +166,7 @@ void userpage::on_checkoutBtn_clicked()
 void userpage::background_setup()
 {
     QMainWindow::showFullScreen();
-    QPixmap background("://images/bookcase-bg.jpg");
+    QPixmap background("://images/assets/bookcase-bg.jpg");
     QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
     image.fill(Qt::transparent); //fills with transparent
     QPainter p(&image);
@@ -188,57 +188,57 @@ void userpage::button_setup()
     ui->details_password->setEnabled(false);
 
     //button style
-    QPixmap up("://images/add2.png");
+    QPixmap up("://images/assets/add2.png");
     QIcon ButtonIcon(up);
     ui->addBookBtn->setIcon(ButtonIcon);
     ui->addBookBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up1("://images/remove3.png");
+    QPixmap up1("://images/assets/remove3.png");
     QIcon ButtonIcon1(up1);
     ui->removeBookBtn->setIcon(ButtonIcon1);
     ui->removeBookBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up2("://images/back.png");
+    QPixmap up2("://images/assets/back.png");
     QIcon ButtonIcon2(up2);
     ui->logoutBtn->setIcon(ButtonIcon2);
     ui->logoutBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up3("://images/contact_us.png");
+    QPixmap up3("://images/assets/contact_us.png");
     QIcon ButtonIcon3(up3);
     ui->contactBtn->setIcon(ButtonIcon3);
     ui->contactBtn->setIconSize(QSize(75, 75));
 
-    QPixmap up4("://images/books_logo.png");
+    QPixmap up4("://images/assets/books_logo.png");
     QIcon ButtonIcon4(up4);
     ui->booksBtn->setIcon(ButtonIcon4);
     ui->booksBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up5("://images/your_account.png");
+    QPixmap up5("://images/assets/your_account.png");
     QIcon ButtonIcon5(up5);
     ui->accountBtn->setIcon(ButtonIcon5);
     ui->accountBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up6("://images/submit.png");
+    QPixmap up6("://images/assets/submit.png");
     QIcon ButtonIcon6(up6);
     ui->submitBtn->setIcon(ButtonIcon6);
     ui->submitBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up7("://images/checkout.png");
+    QPixmap up7("://images/assets/checkout.png");
     QIcon ButtonIcon7(up7);
     ui->checkoutBtn->setIcon(ButtonIcon7);
     ui->checkoutBtn->setIconSize(QSize(80, 80));
 
-    QPixmap up8("://images/edit.png");
+    QPixmap up8("://images/assets/edit.png");
     QIcon ButtonIcon8(up8);
     ui->editBtn->setIcon(ButtonIcon8);
     ui->editBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up9("://images/save.png");
+    QPixmap up9("://images/assets/save.png");
     QIcon ButtonIcon9(up9);
     ui->saveBtn->setIcon(ButtonIcon9);
     ui->saveBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up10("://images/return.png");
+    QPixmap up10("://images/assets/return.png");
     QIcon ButtonIcon10(up10);
     ui->returnBtn->setIcon(ButtonIcon10);
     ui->returnBtn->setIconSize(QSize(75, 75));

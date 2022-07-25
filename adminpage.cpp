@@ -19,7 +19,7 @@ adminpage::~adminpage()
 void adminpage::background_setup()
 {
     QMainWindow::showFullScreen();
-    QPixmap background("://images/bookcase-bg.jpg");
+    QPixmap background("://images/assets/bookcase-bg.jpg");
     QImage image(background.size(), QImage::Format_ARGB32_Premultiplied); //Image with given size and format.
     image.fill(Qt::transparent); //fills with transparent
     QPainter p(&image);
@@ -35,42 +35,42 @@ void adminpage::background_setup()
 void adminpage::button_setup()
 {
 
-    QPixmap up("://images/add2.png");
+    QPixmap up("://images/assets/add2.png");
     QIcon ButtonIcon(up);
     ui->addBtn->setIcon(ButtonIcon);
     ui->addBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up1("://images/remove3.png");
+    QPixmap up1("://images/assets/remove3.png");
     QIcon ButtonIcon1(up1);
     ui->removeBtn->setIcon(ButtonIcon1);
     ui->removeBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up2("://images/back.png");
+    QPixmap up2("://images/assets/back.png");
     QIcon ButtonIcon2(up2);
     ui->logoutBtn->setIcon(ButtonIcon2);
     ui->logoutBtn->setIconSize(QSize(50, 50));
 
-    QPixmap up3("://images/contact_us.png");
+    QPixmap up3("://images/assets/contact_us.png");
     QIcon ButtonIcon3(up3);
     ui->enquiryBtn->setIcon(ButtonIcon3);
     ui->enquiryBtn->setIconSize(QSize(75, 75));
 
-    QPixmap up4("://images/books_logo.png");
+    QPixmap up4("://images/assets/books_logo.png");
     QIcon ButtonIcon4(up4);
     ui->booksBtn->setIcon(ButtonIcon4);
     ui->booksBtn->setIconSize(QSize(100, 100));
 
-    QPixmap up5("://images/your_account.png");
+    QPixmap up5("://images/assets/your_account.png");
     QIcon ButtonIcon5(up5);
     ui->userBtn->setIcon(ButtonIcon5);
     ui->userBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up6("://images/report.png");
+    QPixmap up6("://images/assets/report.png");
     QIcon ButtonIcon6(up6);
     ui->reportBtn->setIcon(ButtonIcon6);
     ui->reportBtn->setIconSize(QSize(65, 65));
 
-    QPixmap up10("://images/return.png");
+    QPixmap up10("://images/assets/return.png");
     QIcon ButtonIcon10(up10);
     ui->borrowedBtn->setIcon(ButtonIcon10);
     ui->borrowedBtn->setIconSize(QSize(75, 75));
